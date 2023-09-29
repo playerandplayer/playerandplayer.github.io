@@ -1,32 +1,18 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synced Text</title>
+    <link rel="stylesheet" hnode server.js
+    ref="styles.css">
+</head>
 <body>
-    
-
-    <title>Test</title>
-    
-
-     <!--if you are seeing this please get out of inspect element!!!!!!!!!!!!!! there are no secrets (yet)-->
-     <button type="button">Get Hydrogen</button>
-     
-     
-
-    
-     <style>
-        .button {
-          border: none;
-          color: white;
-          padding: 15px 32px;
-          text-align: center;
-          text-decoration: none;
-          display: inline-block;
-          font-size: 16px;
-          margin: 4px 2px;
-          cursor: pointer;
-        }
-        
-        .button1 {background-color: #4CAF50;} /* Green */
-        </style>
-    
-    
+    <div class="container">
+        <h1>Edit and Sync Text</h1>
+        <input type="text" id="textInput" placeholder="Edit text">
+        <div id="displayText">Hello, World!</div>
+    </div>
+    <script src="server.js"></script>
 </body>
 </html>
