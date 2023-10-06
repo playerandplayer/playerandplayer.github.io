@@ -40,7 +40,7 @@
     </select>
 
     <!-- Add a button to invade a state -->
-    <button id="invadeButton" disabled>Invade State</button>
+    <button id="invadeButton">Invade State</button>
 
     <script>
         let hasChosenState = false; // Flag to track if the player has chosen a state
@@ -90,12 +90,10 @@
 
         // Function to handle the state selection
         function selectState() {
-            const selectedStateId = document.getElementById('startingState').value;
             if (!hasChosenState) {
                 hasChosenState = true;
                 document.getElementById('startingState').disabled = true; // Disable the dropdown
                 document.getElementById('invadeButton').disabled = false; // Enable the "Invade State" button
-                invadeState(selectedStateId);
             }
         }
 
@@ -117,6 +115,7 @@
                     <p>Population: ${info.population}</p>
                     <p>Owner: ${info.owner}</p>
                 `;
+                selectState(); // Call selectState when a state is clicked
             });
         });
 
