@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Experiment With Web Based RTS</title>
-    <!--V 0.0.0.1-->
+    <title>Experiment With Web-Based RTS</title>
+    <!--V 0.0.0.2-->
     <style>
         /* Add some basic styles for the map */
-    .state {
-        position: absolute;
-        cursor: pointer;
-    }
+        .state {
+            position: absolute;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -17,7 +17,7 @@
     <img src="us-map.png" width="600" height="400" alt="us map">
     <div id="us-map">
         <!-- Define clickable areas for each state -->
-        <div class="state" id="alabama" style="left: 380px; top: 340px; width: 50px; height: 50px;"></div>>
+        <div class="state" id="alabama" style="left: 380px; top: 340px; width: 50px; height: 50px;"></div>
         <div class="state" id="alaska" style="left: 50px; top: 380px; width: 50px; height: 60px;"></div>
         <div class="state" id="california" style="left: 25px; top: 235px; width: 50px; height: 100px;"></div>
         <div class="state" id="nevada" style="left: 65px; top: 215px; width: 50px; height: 75px;"></div>
@@ -28,6 +28,9 @@
         <h2>State Information</h2>
         <p>Select a state on the map to view information.</p>
     </div>
+    
+    <!-- Add a button to invade a state -->
+    <button id="invadeButton">Invade State</button>
 
     <script>
         // Define state information in an object
@@ -60,6 +63,19 @@
             // ...
         };
 
+        // Function to invade a state and change its owner
+        function invadeState(stateId) {
+            if (stateInfo[stateId]) {
+                stateInfo[stateId].owner = "Your Nation"; // Change the owner to your nation
+                document.getElementById('state-info').innerHTML = `
+                    <h2>${stateInfo[stateId].name}</h2>
+                    <p>Capital: ${stateInfo[stateId].capital}</p>
+                    <p>Population: ${stateInfo[stateId].population}</p>
+                    <p>Owner: ${stateInfo[stateId].owner}</p>
+                `;
+            }
+        }
+
         // Add click event listeners to each state
         const stateElements = document.querySelectorAll('.state');
         stateElements.forEach((element) => {
@@ -75,6 +91,13 @@
                     `;
                 }
             });
+        });
+
+        // Add a click event listener to the invade button
+        const invadeButton = document.getElementById('invadeButton');
+        invadeButton.addEventListener('click', () => {
+            const selectedStateId = document.querySelector('.state.active').id;
+            invadeState(selectedStateId);
         });
     </script>
 </body>
