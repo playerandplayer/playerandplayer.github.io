@@ -1,16 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synced Text</title>
-    <link rel="stylesheet" hnode server.js
-    ref="styles.css">
+    <title>US State Info Game</title>
+    <style>
+        /* Add some basic styles for the map */
+        #us-map {
+            background-image: url('us-map.png');
+            width: 800px;
+            height: 500px;
+            position: relative;
+        }
+        .state {
+            position: absolute;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>suggest changes to me on discord</h1>
+    <h1>US State Info Game</h1>
+    <div id="us-map">
+        <!-- Define clickable areas for each state -->
+        <div class="state" id="alabama" style="left: 100px; top: 100px; width: 50px; height: 30px;"></div>
+        <div class="state" id="alaska" style="left: 50px; top: 200px; width: 50px; height: 30px;"></div>
+        <!-- Add more states with their coordinates and dimensions -->
+        <!-- ... -->
     </div>
-    <script src="server.js"></script>
+    <div id="state-info">
+        <h2>State Information</h2>
+        <p>Select a state on the map to view information.</p>
+    </div>
+
+    <script>
+        // Define state information in an object
+        const stateInfo = {
+            alabama: {
+                name: "Alabama",
+                capital: "Montgomery",
+                population: "4.9 million",
+            },
+            alaska: {
+                name: "Alaska",
+                capital: "Juneau",
+                population: "731,000",
+            },
+            // Add more state information here
+            // ...
+        };
+
+        // Add click event listeners to each state
+        const stateElements = document.querySelectorAll('.state');
+        stateElements.forEach((element) => {
+            element.addEventListener('click', (e) => {
+                const stateId = e.target.id;
+                if (stateInfo[stateId]) {
+                    const info = stateInfo[stateId];
+                    document.getElementById('state-info').innerHTML = `
+                        <h2>${info.name}</h2>
+                        <p>Capital: ${info.capital}</p>
+                        <p>Population: ${info.population}</p>
+                    `;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
