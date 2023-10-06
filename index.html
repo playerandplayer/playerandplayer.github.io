@@ -29,6 +29,16 @@
         <p>Select a state on the map to view information.</p>
     </div>
     
+    <!-- Dropdown menu for selecting the player's starting state -->
+    <label for="startingState">Select Your Starting State:</label>
+    <select id="startingState">
+        <option value="alabama">Alabama</option>
+        <option value="alaska">Alaska</option>
+        <option value="california">California</option>
+        <option value="nevada">Nevada</option>
+        <!-- Add more states here -->
+    </select>
+
     <!-- Add a button to invade a state -->
     <button id="invadeButton">Invade State</button>
 
@@ -62,7 +72,7 @@
             // Add more state information here
             // ...
         };
-    
+
         // Function to invade a state and change its owner
         function invadeState(stateId) {
             if (stateInfo[stateId]) {
@@ -75,7 +85,7 @@
                 `;
             }
         }
-    
+
         // Add click event listeners to each state
         const stateElements = document.querySelectorAll('.state');
         stateElements.forEach((element) => {
@@ -96,15 +106,12 @@
                 `;
             });
         });
-    
+
         // Add a click event listener to the invade button
         const invadeButton = document.getElementById('invadeButton');
         invadeButton.addEventListener('click', () => {
-            const selectedState = document.querySelector('.state.active');
-            if (selectedState) {
-                const selectedStateId = selectedState.id;
-                invadeState(selectedStateId);
-            }
+            const selectedStateId = document.getElementById('startingState').value;
+            invadeState(selectedStateId);
         });
     </script>
 </body>
