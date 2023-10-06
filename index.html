@@ -62,11 +62,11 @@
             // Add more state information here
             // ...
         };
-
+    
         // Function to invade a state and change its owner
         function invadeState(stateId) {
             if (stateInfo[stateId]) {
-                stateInfo[stateId].owner = "Test!"; // Change the owner to your nation
+                stateInfo[stateId].owner = "Your Nation"; // Change the owner to your nation
                 document.getElementById('state-info').innerHTML = `
                     <h2>${stateInfo[stateId].name}</h2>
                     <p>Capital: ${stateInfo[stateId].capital}</p>
@@ -75,29 +75,36 @@
                 `;
             }
         }
-
+    
         // Add click event listeners to each state
         const stateElements = document.querySelectorAll('.state');
         stateElements.forEach((element) => {
             element.addEventListener('click', (e) => {
                 const stateId = e.target.id;
-                if (stateInfo[stateId]) {
-                    const info = stateInfo[stateId];
-                    document.getElementById('state-info').innerHTML = `
-                        <h2>${info.name}</h2>
-                        <p>Capital: ${info.capital}</p>
-                        <p>Population: ${info.population}</p>
-                        <p>Owner: ${info.owner}</p>
-                    `;
-                }
+                // Remove the 'active' class from all states
+                stateElements.forEach((stateElement) => {
+                    stateElement.classList.remove('active');
+                });
+                // Add the 'active' class to the clicked state
+                e.target.classList.add('active');
+                const info = stateInfo[stateId];
+                document.getElementById('state-info').innerHTML = `
+                    <h2>${info.name}</h2>
+                    <p>Capital: ${info.capital}</p>
+                    <p>Population: ${info.population}</p>
+                    <p>Owner: ${info.owner}</p>
+                `;
             });
         });
-
+    
         // Add a click event listener to the invade button
         const invadeButton = document.getElementById('invadeButton');
         invadeButton.addEventListener('click', () => {
-            const selectedStateId = document.querySelector('.state.active').id;
-            invadeState(selectedStateId);
+            const selectedState = document.querySelector('.state.active');
+            if (selectedState) {
+                const selectedStateId = selectedState.id;
+                invadeState(selectedStateId);
+            }
         });
     </script>
 </body>
