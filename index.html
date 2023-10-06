@@ -40,9 +40,11 @@
     </select>
 
     <!-- Add a button to invade a state -->
-    <button id="invadeButton">Invade State</button>
+    <button id="invadeButton" disabled>Invade State</button>
 
     <script>
+        let hasChosenState = false; // Flag to track if the player has chosen a state
+
         // Define state information in an object
         const stateInfo = {
             alabama: {
@@ -86,6 +88,17 @@
             }
         }
 
+        // Function to handle the state selection
+        function selectState() {
+            const selectedStateId = document.getElementById('startingState').value;
+            if (!hasChosenState) {
+                hasChosenState = true;
+                document.getElementById('startingState').disabled = true; // Disable the dropdown
+                document.getElementById('invadeButton').disabled = false; // Enable the "Invade State" button
+                invadeState(selectedStateId);
+            }
+        }
+
         // Add click event listeners to each state
         const stateElements = document.querySelectorAll('.state');
         stateElements.forEach((element) => {
@@ -110,8 +123,11 @@
         // Add a click event listener to the invade button
         const invadeButton = document.getElementById('invadeButton');
         invadeButton.addEventListener('click', () => {
-            const selectedStateId = document.getElementById('startingState').value;
-            invadeState(selectedStateId);
+            const selectedState = document.querySelector('.state.active');
+            if (selectedState) {
+                const selectedStateId = selectedState.id;
+                invadeState(selectedStateId);
+            }
         });
     </script>
 </body>
