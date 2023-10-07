@@ -14,13 +14,20 @@
 <body>
     
     <h1>US States</h1>
-    <img src="us-map.png" width="600" height="400" alt="us map" id="us-map">
+    <img src="us-map.png" width="600" height="400" alt="us map" usemap="#us-map">
+    <map name="us-map">
+        <!-- Define clickable areas for each state manually -->
+        <area class="state" id="alabama" shape="rect" coords="380,340,430,390" alt="Alabama">
+        <area class="state" id="alaska" shape="rect" coords="50,380,100,440" alt="Alaska">
+        <area class="state" id="california" shape="rect" coords="25,235,75,335" alt="California">
+        <area class="state" id="nevada" shape="rect" coords="65,215,115,290" alt="Nevada">
+        <!-- Add more states with their coordinates -->
+        <!-- ... -->
+    </map>
     <div id="state-info">
         <h2>State Information</h2>
         <p>Select a state on the map to view information.</p>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.0/js/imageMapResizer.min.js"></script>
-
 
     <script>
         // Define state information in an object
@@ -65,13 +72,6 @@
                 `;
             }
         }
-
-        // Add click event listener to the image
-        const usMap = document.getElementById('us-map');
-        usMap.addEventListener('load', () => {
-            // Resize the image map using the "image-map-resizer" library
-            window.iFrameResize({}, '#us-map');
-        });
 
         // Add click event listeners to each state
         const stateAreas = document.querySelectorAll('.state');
