@@ -9,25 +9,37 @@
             position: absolute;
             cursor: pointer;
         }
+        .state img {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
     
     <h1>US States</h1>
-    <!--<img src="us-map.png" width="600" height="400" alt="us map">-->
+    <img src="us-map.png" width="600" height="400" alt="us map">
     <div id="us-map">
         <!-- Define clickable areas for each state with images -->
         <div class="state" id="alabama" style="left: 380px; top: 340px;">
-            <img src="alabama.png" width="50" height="50" alt="Alabama">
+            <div>
+                <img src="alabama.png" alt="Alabama">
+            </div>
         </div>
         <div class="state" id="alaska" style="left: 50px; top: 380px;">
-            <img src="alaska.png" width="50" height="60" alt="Alaska">
+            <div>
+                <img src="alaska.png" alt="Alaska">
+            </div>
         </div>
         <div class="state" id="california" style="left: 25px; top: 235px;">
-            <img src="california.png" width="50" height="100" alt="California">
+            <div>
+                <img src="california.png" alt="California">
+            </div>
         </div>
         <div class="state" id="nevada" style="left: 65px; top: 215px;">
-            <img src="nevada.png" width="50" height="75" alt="Nevada">
+            <div>
+                <img src="nevada.png" alt="Nevada">
+            </div>
         </div>
         <!-- Add more states with their images -->
         <!-- ... -->
@@ -85,13 +97,13 @@
         const stateElements = document.querySelectorAll('.state');
         stateElements.forEach((element) => {
             element.addEventListener('click', (e) => {
-                const stateId = e.target.id;
+                const stateId = e.currentTarget.id;
                 // Remove the 'active' class from all states
                 stateElements.forEach((stateElement) => {
                     stateElement.classList.remove('active');
                 });
                 // Add the 'active' class to the clicked state
-                e.target.classList.add('active');
+                e.currentTarget.classList.add('active');
                 displayStateInfo(stateId);
             });
         });
