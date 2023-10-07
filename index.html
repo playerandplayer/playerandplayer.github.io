@@ -9,21 +9,33 @@
             position: absolute;
             cursor: pointer;
         }
+        .state img {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
     
     <h1>US States</h1>
-    <img src="us-map.png" width="600" height="400" alt="us map" usemap="#us-map">
-    <map name="us-map">
-        <!-- Define clickable areas for each state manually -->
-        <area class="state" id="alabama" shape="rect" coords="380,340,430,390" alt="Alabama">
-        <area class="state" id="alaska" shape="rect" coords="50,380,100,440" alt="Alaska">
-        <area class="state" id="california" shape="rect" coords="25,235,75,335" alt="California">
-        <area class="state" id="nevada" shape="rect" coords="65,215,115,290" alt="Nevada">
-        <!-- Add more states with their coordinates -->
+    <img src="us-map.png" width="600" height="400" alt="us map">
+    <div id="us-map">
+        <!-- Define clickable areas for each state with images -->
+        <div class="state" id="alabama" style="left: 380px; top: 340px; width: 54px; height: 54px;">
+            <img src="alabama.png" alt="Alabama">
+        </div>
+        <div class="state" id="alaska" style="left: 50px; top: 380px; width: 54px; height: 64px;">
+            <img src="alaska.png" alt="Alaska">
+        </div>
+        <div class="state" id="california" style="left: 25px; top: 235px; width: 54px; height: 104px;">
+            <img src="california.png" alt="California">
+        </div>
+        <div class="state" id="nevada" style="left: 65px; top: 215px; width: 54px; height: 79px;">
+            <img src="nevada.png" alt="Nevada">
+        </div>
+        <!-- Add more states with their images -->
         <!-- ... -->
-    </map>
+    </div>
     <div id="state-info">
         <h2>State Information</h2>
         <p>Select a state on the map to view information.</p>
@@ -74,16 +86,16 @@
         }
 
         // Add click event listeners to each state
-        const stateAreas = document.querySelectorAll('.state');
-        stateAreas.forEach((area) => {
-            area.addEventListener('click', (e) => {
-                const stateId = e.target.id;
+        const stateElements = document.querySelectorAll('.state');
+        stateElements.forEach((element) => {
+            element.addEventListener('click', (e) => {
+                const stateId = e.currentTarget.id;
                 // Remove the 'active' class from all states
-                stateAreas.forEach((stateArea) => {
-                    stateArea.classList.remove('active');
+                stateElements.forEach((stateElement) => {
+                    stateElement.classList.remove('active');
                 });
                 // Add the 'active' class to the clicked state
-                e.target.classList.add('active');
+                e.currentTarget.classList.add('active');
                 displayStateInfo(stateId);
             });
         });
