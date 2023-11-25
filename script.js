@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Sample list of countries with image URLs
     const countries = [
-        { name: "United States", capital: "Washington, D.C.", population: "331 million", image: "usa.jpg" },
-        { name: "United Kingdom", capital: "London", population: "68 million", image: "uk.jpg" },
-        { name: "Canada", capital: "Ottawa", population: "38 million", image: "canada.jpg" },
+        { name: "United States", capital: "Washington, D.C.", population: "331 million", image: "usa.jpg", owner: "USA" },
+        { name: "United Kingdom", capital: "London", population: "68 million", image: "uk.jpg", owner: "United Kingdom" },
+        { name: "Canada", capital: "Ottawa", population: "38 million", image: "canada.jpg", owner: "Canada" },
         // Add more countries as needed
     ];
 
@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <strong>Name:</strong> ${country.name}<br>
             <strong>Capital:</strong> ${country.capital}<br>
             <strong>Population:</strong> ${country.population}<br>
+            <strong>Owner:</strong> ${country.owner}<br>
             <img src="${country.image}" alt="${country.name}" width="100">
         `;
     }
