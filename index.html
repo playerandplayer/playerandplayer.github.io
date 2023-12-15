@@ -3,52 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>State and Province Info</title>
+    <title>Exploding Page</title>
     <style>
-        ul {
-            list-style-type: none;
-            padding: 0;
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
         }
 
-        li {
+        #explosionButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: red;
+            color: white;
+            font-size: 18px;
             cursor: pointer;
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #ccc;
-            background-color: #f5f5f5;
+            border: none;
+            outline: none;
         }
 
-        li:hover {
-            background-color: #e0e0e0;
+        .explosion {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            animation: explodeAnimation 1s ease-out infinite;
         }
 
-        #info-container {
-            margin-top: 20px;
+        @keyframes explodeAnimation {
+            to {
+                transform: scale(30);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h1>State and Province Info</h1>
-
-    <ul id="stateList">
-        <li onclick="showInfo('California')">California</li>
-        <li onclick="showInfo('New York')">New York</li>
-        <li onclick="showInfo('Texas')">Texas</li>
-        <li onclick="showInfo('Ontario')">Ontario</li>
-        <li onclick="showInfo('Quebec')">Quebec</li>
-        <!-- Add more states and provinces as needed -->
-    </ul>
-
-    <div id="info-container">
-        <h2>Information</h2>
-        <p id="infoText">Click on a state or province to see information.</p>
-    </div>
+    <button id="explosionButton" onclick="explodePage()">Explode!</button>
 
     <script>
-        function showInfo(location) {
-            var infoText = document.getElementById('infoText');
-            infoText.textContent = 'You clicked on ' + location + '. Add more information here.';
+        function explodePage() {
+            const explosionButton = document.getElementById('explosionButton');
+            
+            // Create multiple explosion elements
+            for (let i = 0; i < 50; i++) {
+                const explosion = document.createElement('div');
+                explosion.classList.add('explosion');
+                explosion.style.left = Math.random() * window.innerWidth + 'px';
+                explosion.style.top = Math.random() * window.innerHeight + 'px';
+                document.body.appendChild(explosion);
+            }
+
+            // Remove the button after the explosion
+            explosionButton.style.display = 'none';
         }
     </script>
 
