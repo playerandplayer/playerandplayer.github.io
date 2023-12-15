@@ -3,24 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Country Interaction</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>State and Province Info</title>
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+        }
+
+        li:hover {
+            background-color: #e0e0e0;
+        }
+
+        #info-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Country Interaction</h1>
+    <h1>State and Province Info</h1>
 
-    <div id="country-list">
-        <h2>Country List</h2>
-        <ul id="countries"></ul>
+    <ul id="stateList">
+        <li onclick="showInfo('California')">California</li>
+        <li onclick="showInfo('New York')">New York</li>
+        <li onclick="showInfo('Texas')">Texas</li>
+        <li onclick="showInfo('Ontario')">Ontario</li>
+        <li onclick="showInfo('Quebec')">Quebec</li>
+        <!-- Add more states and provinces as needed -->
+    </ul>
+
+    <div id="info-container">
+        <h2>Information</h2>
+        <p id="infoText">Click on a state or province to see information.</p>
     </div>
 
-    <div id="country-info">
-        <h2>Country Information</h2>
-        <div id="selected-country"></div>
-        <button id="invade-button">Invade Country</button>
-    </div>
+    <script>
+        function showInfo(location) {
+            var infoText = document.getElementById('infoText');
+            infoText.textContent = 'You clicked on ' + location + '. Add more information here.';
+        }
+    </script>
 
-    <script src="script.js"></script>
 </body>
 </html>
