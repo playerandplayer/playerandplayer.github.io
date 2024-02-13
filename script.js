@@ -15,6 +15,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event){
         // If the username exists, check if the entered password matches
         if(users[username] === password) {
             alert("Login successful!");
+            window.location.href = "market.html";
             // Redirect to another page or perform any desired action
         } else {
             alert("Invalid password. Please try again.");
