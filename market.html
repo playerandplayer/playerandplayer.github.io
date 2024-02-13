@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Market Page</title>
+<style>
+  .item {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+<h2>Welcome to the Global Market!</h2>
+<p>This is where you can buy and sell goods.</p>
+
+<div class="item" id="item1">
+  <h3>Item 1</h3>
+  <p>Stock: <span id="item1Stock">10</span></p>
+  <p>Price: $<span id="item1Price">10</span></p>
+  <button onclick="buyItem('item1')">Buy</button>
+  <button onclick="sellItem('item1')">Sell</button>
+</div>
+
+<div class="item" id="item2">
+  <h3>Item 2</h3>
+  <p>Stock: <span id="item2Stock">20</span></p>
+  <p>Price: $<span id="item2Price">20</span></p>
+  <button onclick="buyItem('item2')">Buy</button>
+  <button onclick="sellItem('item2')">Sell</button>
+</div>
+
+<!-- Add more items as needed -->
+
+<script>
+  // Define initial stock levels and prices for all items
+  var marketData = {
+    "item1": {stock: 10, price: 10},
+    "item2": {stock: 20, price: 20}
+    // Add more items as needed
+  };
+
+  function buyItem(itemName) {
+    if (marketData[itemName].stock > 0) {
+      marketData[itemName].stock--;
+      updateDisplay(itemName);
+      alert("You bought " + itemName);
+    } else {
+      alert("Item out of stock");
+    }
+  }
+
+  function sellItem(itemName) {
+    marketData[itemName].stock++;
+    updateDisplay(itemName);
+    alert("You sold " + itemName);
+  }
+
+  function updateDisplay(itemName) {
+    var stockElement = document.getElementById(itemName + 'Stock');
+    var priceElement = document.getElementById(itemName + 'Price');
+    
+    stockElement.innerText = marketData[itemName].stock;
+    priceElement.innerText = marketData[itemName].price.toFixed(2);
+  }
+</script>
+</body>
+</html>
