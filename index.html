@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Page</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Data</title>
 </head>
 <body>
-<div class="container">
-  <h2>Login</h2>
-  <form id="loginForm">
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br>
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
-    <input type="submit" value="Login">
-  </form>
-</div>
-<script src="script.js"></script>
+    <h1>Player Data</h1>
+    <button onclick="savePlayerData()">Save Data</button>
+    <button onclick="loadPlayerData()">Load Data</button>
+    <script>
+        function savePlayerData() {
+            var playerData = {
+                playerName: "John",
+                score: 100
+            };
+            localStorage.setItem('playerData', JSON.stringify(playerData));
+            alert('Player data saved!');
+        }
+
+        function loadPlayerData() {
+            var playerData = localStorage.getItem('playerData');
+            if (playerData) {
+                playerData = JSON.parse(playerData);
+                alert('Player Name: ' + playerData.playerName + ', Score: ' + playerData.score);
+            } else {
+                alert('No player data found.');
+            }
+        }
+    </script>
 </body>
 </html>
