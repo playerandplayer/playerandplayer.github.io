@@ -7,25 +7,28 @@
 </head>
 <body>
     <h1>Player Data</h1>
+    <input type="text" id="username" placeholder="Enter username">
     <button onclick="savePlayerData()">Save Data</button>
     <button onclick="loadPlayerData()">Load Data</button>
     <script>
         function savePlayerData() {
+            var username = document.getElementById('username').value;
             var playerData = {
-                playerName: "John",
-                score: 100
+                playerName: username,
+                score: 100 // You can set the initial score or any other data here
             };
-            localStorage.setItem('playerData', JSON.stringify(playerData));
-            alert('Player data saved!');
+            localStorage.setItem(username, JSON.stringify(playerData));
+            alert('Player data saved for ' + username);
         }
 
         function loadPlayerData() {
-            var playerData = localStorage.getItem('playerData');
-            if (playerData) {
-                playerData = JSON.parse(playerData);
+            var username = document.getElementById('username').value;
+            var playerDataString = localStorage.getItem(username);
+            if (playerDataString) {
+                var playerData = JSON.parse(playerDataString);
                 alert('Player Name: ' + playerData.playerName + ', Score: ' + playerData.score);
             } else {
-                alert('No player data found.');
+                alert('No player data found for ' + username);
             }
         }
     </script>
