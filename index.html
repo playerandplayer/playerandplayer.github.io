@@ -19,19 +19,31 @@
 
     <script>
         class InterestGroup {
-            constructor(name, socialAxis, economicAxis) {
+            constructor(name) {
                 this.name = name;
-                this.socialAxis = socialAxis; // String representing social ideology
-                this.economicAxis = economicAxis; // String representing economic ideology
-                this.approval = 50;  // Initial approval rating
+                this.socialOutlook = this.generateRandomOutlook(['Liberalism', 'Conservatism']);
+                this.economicOutlook = this.generateRandomOutlook(['Capitalism', 'Socialism', 'Communism']);
+                this.approval = 50;
+            }
+
+            generateRandomOutlook(ideologies) {
+                let outlook = {};
+                ideologies.forEach(ideology => {
+                    outlook[ideology] = Math.floor(Math.random() * 101);
+                });
+                return outlook;
+            }
+
+            getDominantOutlook(outlook) {
+                return Object.keys(outlook).reduce((a, b) => outlook[a] > outlook[b] ? a : b);
             }
 
             updateApproval(action) {
                 let impact = 0;
 
-                if (action === this.socialAxis.toLowerCase()) {
+                if (action === this.getDominantOutlook(this.socialOutlook).toLowerCase()) {
                     impact += 5;
-                } else if (action === this.economicAxis.toLowerCase()) {
+                } else if (action === this.getDominantOutlook(this.economicOutlook).toLowerCase()) {
                     impact += 5;
                 } else if (action === 'neutral') {
                     impact -= 5;
@@ -40,27 +52,25 @@
                 }
 
                 this.approval += impact;
-
-                // Ensure approval stays between 0 and 100
                 this.approval = Math.min(100, Math.max(0, this.approval));
             }
 
             render() {
                 return `<div class="group">
                     <h2>${this.name}</h2>
-                    <p>Social Axis: ${this.socialAxis}</p>
-                    <p>Economic Axis: ${this.economicAxis}</p>
+                    <p>Social Outlook: ${this.getDominantOutlook(this.socialOutlook)}</p>
+                    <p>Economic Outlook: ${this.getDominantOutlook(this.economicOutlook)}</p>
                     <p>Approval: ${this.approval}%</p>
                 </div>`;
             }
         }
 
         const groups = [
-            new InterestGroup('Group 1', 'Liberalism', 'Capitalism'),
-            new InterestGroup('Group 2', 'Conservatism', 'Socialism'),
-            new InterestGroup('Group 3', 'Liberalism', 'Communism'),
-            new InterestGroup('Group 4', 'Conservatism', 'Capitalism'),
-            new InterestGroup('Group 5', 'Liberalism', 'Socialism')
+            new InterestGroup('Group 1'),
+            new InterestGroup('Group 2'),
+            new InterestGroup('Group 3'),
+            new InterestGroup('Group 4'),
+            new InterestGroup('Group 5')
         ];
 
         function renderGroups() {
@@ -70,9 +80,7 @@
 
         function nextTerm() {
             const action = prompt('Choose your action for this term (liberalism, conservatism, socialism, capitalism, communism, neutral):').toLowerCase();
-            
             groups.forEach(group => group.updateApproval(action));
-            
             renderGroups();
         }
 
