@@ -38,7 +38,13 @@
             }
 
             getSocialIdeology() {
-                return this.socialAxisPercentage > 50 ? 'Liberalism' : 'Conservatism';
+                if (this.socialAxisPercentage > 66) {
+                    return 'Conservatism';
+                } else if (this.socialAxisPercentage > 33) {
+                    return 'Liberalism';
+                } else {
+                    return 'Progressive';
+                }
             }
 
             getEconomicIdeology() {
