@@ -24,6 +24,18 @@
                 this.approval = 50;  // Initial approval rating
             }
 
+            getDominantSocialOutlook() {
+                const maxSocialValue = Math.max(this.socialOutlook.liberal, this.socialOutlook.conservative);
+                return this.socialOutlook.liberal === maxSocialValue ? 'Liberal' : 'Conservative';
+            }
+
+            getDominantEconomicOutlook() {
+                const maxEconomicValue = Math.max(this.economicOutlook.capitalism, this.economicOutlook.socialism, this.economicOutlook.communism);
+                if (this.economicOutlook.capitalism === maxEconomicValue) return 'Capitalism';
+                if (this.economicOutlook.socialism === maxEconomicValue) return 'Socialism';
+                return 'Communism';
+            }
+
             updateApproval(action) {
                 let socialImpact = 0;
                 let economicImpact = 0;
@@ -52,8 +64,8 @@
             render() {
                 return `<div class="group">
                     <h2>${this.name}</h2>
-                    <p>Social Outlook: Liberal - ${this.socialOutlook.liberal}%, Conservative - ${this.socialOutlook.conservative}%</p>
-                    <p>Economic Outlook: Capitalism - ${this.economicOutlook.capitalism}%, Socialism - ${this.economicOutlook.socialism}%, Communism - ${this.economicOutlook.communism}%</p>
+                    <p>Social Outlook: ${this.getDominantSocialOutlook()}</p>
+                    <p>Economic Outlook: ${this.getDominantEconomicOutlook()}</p>
                     <p>Approval: ${this.approval}%</p>
                 </div>`;
             }
