@@ -3,46 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Data</title>
+    <title>Interest Groups</title>
+    <style>
+        .group {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Player Data</h1>
-    <h2>Points: <span id="pointsDisplay">0</span></h2>
-    <input type="text" id="username" placeholder="Enter username">
-    <button onclick="savePlayerData()">Save Data</button>
-    <button onclick="loadPlayerData()">Load Data</button>
-    <button onclick="gainPoint()">Gain Point</button>
+    <h1>Interest Groups</h1>
+    <div id="groups"></div>
+    <button onclick="nextTerm()">Next Term</button>
 
     <script>
-        var point = 0; // Initialize the point variable
+        class InterestGroup {
+            constructor(name, conservatism, socialism) {
+                this.name = name;
+                this.conservatism = conservatism;
+                this.socialism = socialism;
+                this.approval = 50;  // Initial approval rating
+            }
 
-        function savePlayerData() {
-            var username = document.getElementById('username').value;
-            var playerData = {
-                playerName: username,
-                score: point // Save the current point value
-            };
-            localStorage.setItem(username, JSON.stringify(playerData));
-            alert('Player data saved for ' + username);
-        }
+            updateApproval(action) {
+                if (action === 'conservative') {
+                    this.approval += this.conservatism / 10;
+                } else if (action === 'socialist') {
+                    this.approval += this.socialism / 10;
+                } else {
+                    this.approval -= 5;  // Neutral action reduces approval
+                }
 
-        function loadPlayerData() {
-            var username = document.getElementById('username').value;
-            var playerDataString = localStorage.getItem(username);
-            if (playerDataString) {
-                var playerData = JSON.parse(playerDataString);
-                point = playerData.score; // Load the saved point value
-                document.getElementById('pointsDisplay').innerText = point; // Update points display
-                alert('Player Name: ' + playerData.playerName + ', Score: ' + playerData.score);
-            } else {
-                alert('No player data found for ' + username);
+                // Ensure approval stays between 0 and 100
+                this.approval = Math.min(100, Math.max(0, this.approval));
+            }
+
+            render() {
+                return `<div class="group">
+                    <h2>${this.name}</h2>
+                    <p>Conservatism: ${this.conservatism}%</p>
+                    <p>Socialism: ${this.socialism}%</p>
+                    <p>Approval: ${this.approval}%</p>
+                </div>`;
             }
         }
 
-        function gainPoint() {
-            point++; // Increment point
-            document.getElementById('pointsDisplay').innerText = point; // Update points display
+        const groups = [
+            new InterestGroup('Group 1', 70, 30),
+            new InterestGroup('Group 2', 50, 50),
+            new InterestGroup('Group 3', 20, 80),
+            new InterestGroup('Group 4', 60, 40),
+            new InterestGroup('Group 5', 30, 70)
+        ];
+
+        function renderGroups() {
+            const groupsContainer = document.getElementById('groups');
+            groupsContainer.innerHTML = groups.map(group => group.render()).join('');
         }
+
+        function nextTerm() {
+            const action = prompt('Choose your action for this term (conservative, socialist, neutral):').toLowerCase();
+            
+            groups.forEach(group => group.updateApproval(action));
+            
+            renderGroups();
+        }
+
+        renderGroups();
     </script>
 </body>
 </html>
