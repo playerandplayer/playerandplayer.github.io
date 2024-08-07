@@ -29,13 +29,6 @@
             return names[randomIndex];
         }
 
-        class InterestGroup {
-            constructor() {
-                this.name = generateRandomName();
-                this.socialAxisPercentage = Math.floor(Math.random() * 101); // Social axis percentage (0-100)
-                this.economicAxisPercentage = Math.floor(Math.random() * 101); // Economic axis percentage (0-100)
-                this.approval = 50; // Initial approval rating
-            }
 
             getSocialIdeology() {
                 if (this.socialAxisPercentage > 66) {
@@ -83,6 +76,14 @@
                 </div>`;
             }
         }
+		
+		class InterestGroup {
+            constructor() {
+                this.name = generateRandomName();
+                this.socialAxisPercentage = Math.floor(Math.random() * 101); // Social axis percentage (0-100)
+                this.economicAxisPercentage = Math.floor(Math.random() * 101); // Economic axis percentage (0-100)
+                this.approval = 50; // Initial approval rating
+            }
 
         // Create an array of interest groups with random names
         const groups = [
