@@ -17,21 +17,32 @@
 
     <script>
         class InterestGroup {
-            constructor(name, conservatism, socialism) {
+            constructor(name, socialOutlook, economicOutlook) {
                 this.name = name;
-                this.conservatism = conservatism;
-                this.socialism = socialism;
+                this.socialOutlook = socialOutlook; // Object with categories
+                this.economicOutlook = economicOutlook; // Object with categories
                 this.approval = 50;  // Initial approval rating
             }
 
             updateApproval(action) {
-                if (action === 'conservative') {
-                    this.approval += this.conservatism / 10;
+                let socialImpact = 0;
+                let economicImpact = 0;
+
+                if (action === 'liberal') {
+                    socialImpact = this.socialOutlook.liberal / 10;
+                    economicImpact = this.economicOutlook.liberal / 10;
+                } else if (action === 'conservative') {
+                    socialImpact = this.socialOutlook.conservative / 10;
+                    economicImpact = this.economicOutlook.conservative / 10;
                 } else if (action === 'socialist') {
-                    this.approval += this.socialism / 10;
+                    socialImpact = this.socialOutlook.socialist / 10;
+                    economicImpact = this.economicOutlook.socialist / 10;
                 } else {
-                    this.approval -= 5;  // Neutral action reduces approval
+                    socialImpact = -5;
+                    economicImpact = -5;
                 }
+
+                this.approval += socialImpact + economicImpact;
 
                 // Ensure approval stays between 0 and 100
                 this.approval = Math.min(100, Math.max(0, this.approval));
@@ -40,19 +51,19 @@
             render() {
                 return `<div class="group">
                     <h2>${this.name}</h2>
-                    <p>Conservatism: ${this.conservatism}%</p>
-                    <p>Socialism: ${this.socialism}%</p>
+                    <p>Social Outlook: Liberal - ${this.socialOutlook.liberal}%, Conservative - ${this.socialOutlook.conservative}%, Socialist - ${this.socialOutlook.socialist}%</p>
+                    <p>Economic Outlook: Liberal - ${this.economicOutlook.liberal}%, Conservative - ${this.economicOutlook.conservative}%, Socialist - ${this.economicOutlook.socialist}%</p>
                     <p>Approval: ${this.approval}%</p>
                 </div>`;
             }
         }
 
         const groups = [
-            new InterestGroup('Group 1', 70, 30),
-            new InterestGroup('Group 2', 50, 50),
-            new InterestGroup('Group 3', 20, 80),
-            new InterestGroup('Group 4', 60, 40),
-            new InterestGroup('Group 5', 30, 70)
+            new InterestGroup('Group 1', { liberal: 70, conservative: 20, socialist: 10 }, { liberal: 30, conservative: 50, socialist: 20 }),
+            new InterestGroup('Group 2', { liberal: 50, conservative: 30, socialist: 20 }, { liberal: 40, conservative: 40, socialist: 20 }),
+            new InterestGroup('Group 3', { liberal: 20, conservative: 10, socialist: 70 }, { liberal: 80, conservative: 10, socialist: 10 }),
+            new InterestGroup('Group 4', { liberal: 60, conservative: 30, socialist: 10 }, { liberal: 40, conservative: 40, socialist: 20 }),
+            new InterestGroup('Group 5', { liberal: 30, conservative: 50, socialist: 20 }, { liberal: 70, conservative: 20, socialist: 10 })
         ];
 
         function renderGroups() {
@@ -61,7 +72,7 @@
         }
 
         function nextTerm() {
-            const action = prompt('Choose your action for this term (conservative, socialist, neutral):').toLowerCase();
+            const action = prompt('Choose your action for this term (liberal, conservative, socialist, neutral):').toLowerCase();
             
             groups.forEach(group => group.updateApproval(action));
             
