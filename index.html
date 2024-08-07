@@ -18,32 +18,45 @@
     <button onclick="nextTerm()">Next Term</button>
 
     <script>
+        // Function to generate a random group name
+        function generateRandomName() {
+            const names = [
+                'Alpha Squad', 'Beta Crew', 'Gamma Team', 'Delta Force', 
+                'Epsilon Group', 'Zeta Alliance', 'Eta League', 'Theta Circle', 
+                'Iota Network', 'Kappa Coalition'
+            ];
+            const randomIndex = Math.floor(Math.random() * names.length);
+            return names[randomIndex];
+        }
+
         class InterestGroup {
-            constructor(name) {
-                this.name = name;
-                this.socialOutlook = this.generateRandomOutlook(['Liberalism', 'Conservatism']);
-                this.economicOutlook = this.generateRandomOutlook(['Capitalism', 'Socialism', 'Communism']);
-                this.approval = 50;
+            constructor() {
+                this.name = generateRandomName();
+                this.socialAxisPercentage = Math.floor(Math.random() * 101); // Social axis percentage (0-100)
+                this.economicAxisPercentage = Math.floor(Math.random() * 101); // Economic axis percentage (0-100)
+                this.approval = 50; // Initial approval rating
             }
 
-            generateRandomOutlook(ideologies) {
-                let outlook = {};
-                ideologies.forEach(ideology => {
-                    outlook[ideology] = Math.floor(Math.random() * 101);
-                });
-                return outlook;
+            getSocialIdeology() {
+                return this.socialAxisPercentage > 50 ? 'Liberalism' : 'Conservatism';
             }
 
-            getDominantOutlook(outlook) {
-                return Object.keys(outlook).reduce((a, b) => outlook[a] > outlook[b] ? a : b);
+            getEconomicIdeology() {
+                if (this.economicAxisPercentage > 66) {
+                    return 'Capitalism';
+                } else if (this.economicAxisPercentage > 33) {
+                    return 'Socialism';
+                } else {
+                    return 'Communism';
+                }
             }
 
             updateApproval(action) {
                 let impact = 0;
 
-                if (action === this.getDominantOutlook(this.socialOutlook).toLowerCase()) {
+                if (action === this.getSocialIdeology().toLowerCase()) {
                     impact += 5;
-                } else if (action === this.getDominantOutlook(this.economicOutlook).toLowerCase()) {
+                } else if (action === this.getEconomicIdeology().toLowerCase()) {
                     impact += 5;
                 } else if (action === 'neutral') {
                     impact -= 5;
@@ -58,19 +71,20 @@
             render() {
                 return `<div class="group">
                     <h2>${this.name}</h2>
-                    <p>Social Outlook: ${this.getDominantOutlook(this.socialOutlook)}</p>
-                    <p>Economic Outlook: ${this.getDominantOutlook(this.economicOutlook)}</p>
+                    <p>Social Axis: ${this.socialAxisPercentage}% (${this.getSocialIdeology()})</p>
+                    <p>Economic Axis: ${this.economicAxisPercentage}% (${this.getEconomicIdeology()})</p>
                     <p>Approval: ${this.approval}%</p>
                 </div>`;
             }
         }
 
+        // Create an array of interest groups with random names
         const groups = [
-            new InterestGroup('Group 1', 70, 30),
-            new InterestGroup('Group 2', 50, 50),
-            new InterestGroup('Group 3', 20, 80),
-            new InterestGroup('Group 4', 60, 40),
-            new InterestGroup('Group 5', 30, 70)
+            new InterestGroup(),
+            new InterestGroup(),
+            new InterestGroup(),
+            new InterestGroup(),
+            new InterestGroup()
         ];
 
         function renderGroups() {
