@@ -30,13 +30,14 @@
 
                 if (action === 'liberal') {
                     socialImpact = this.socialOutlook.liberal / 10;
-                    economicImpact = this.economicOutlook.liberal / 10;
                 } else if (action === 'conservative') {
                     socialImpact = this.socialOutlook.conservative / 10;
-                    economicImpact = this.economicOutlook.conservative / 10;
                 } else if (action === 'socialist') {
-                    socialImpact = this.socialOutlook.socialist / 10;
-                    economicImpact = this.economicOutlook.socialist / 10;
+                    economicImpact = this.economicOutlook.socialism / 10;
+                } else if (action === 'capitalist') {
+                    economicImpact = this.economicOutlook.capitalism / 10;
+                } else if (action === 'communist') {
+                    economicImpact = this.economicOutlook.communism / 10;
                 } else {
                     socialImpact = -5;
                     economicImpact = -5;
@@ -51,19 +52,19 @@
             render() {
                 return `<div class="group">
                     <h2>${this.name}</h2>
-                    <p>Social Outlook: Liberal - ${this.socialOutlook.liberal}%, Conservative - ${this.socialOutlook.conservative}%, Socialist - ${this.socialOutlook.socialist}%</p>
-                    <p>Economic Outlook: Liberal - ${this.economicOutlook.liberal}%, Conservative - ${this.economicOutlook.conservative}%, Socialist - ${this.economicOutlook.socialist}%</p>
+                    <p>Social Outlook: Liberal - ${this.socialOutlook.liberal}%, Conservative - ${this.socialOutlook.conservative}%</p>
+                    <p>Economic Outlook: Capitalism - ${this.economicOutlook.capitalism}%, Socialism - ${this.economicOutlook.socialism}%, Communism - ${this.economicOutlook.communism}%</p>
                     <p>Approval: ${this.approval}%</p>
                 </div>`;
             }
         }
 
         const groups = [
-            new InterestGroup('Group 1', { liberal: 70, conservative: 20, socialist: 10 }, { liberal: 30, conservative: 50, socialist: 20 }),
-            new InterestGroup('Group 2', { liberal: 50, conservative: 30, socialist: 20 }, { liberal: 40, conservative: 40, socialist: 20 }),
-            new InterestGroup('Group 3', { liberal: 20, conservative: 10, socialist: 70 }, { liberal: 80, conservative: 10, socialist: 10 }),
-            new InterestGroup('Group 4', { liberal: 60, conservative: 30, socialist: 10 }, { liberal: 40, conservative: 40, socialist: 20 }),
-            new InterestGroup('Group 5', { liberal: 30, conservative: 50, socialist: 20 }, { liberal: 70, conservative: 20, socialist: 10 })
+            new InterestGroup('Group 1', { liberal: 70, conservative: 30 }, { capitalism: 40, socialism: 40, communism: 20 }),
+            new InterestGroup('Group 2', { liberal: 50, conservative: 50 }, { capitalism: 30, socialism: 50, communism: 20 }),
+            new InterestGroup('Group 3', { liberal: 20, conservative: 80 }, { capitalism: 60, socialism: 20, communism: 20 }),
+            new InterestGroup('Group 4', { liberal: 60, conservative: 40 }, { capitalism: 50, socialism: 30, communism: 20 }),
+            new InterestGroup('Group 5', { liberal: 40, conservative: 60 }, { capitalism: 20, socialism: 60, communism: 20 })
         ];
 
         function renderGroups() {
@@ -72,7 +73,7 @@
         }
 
         function nextTerm() {
-            const action = prompt('Choose your action for this term (liberal, conservative, socialist, neutral):').toLowerCase();
+            const action = prompt('Choose your action for this term (liberal, conservative, socialist, capitalist, communist, neutral):').toLowerCase();
             
             groups.forEach(group => group.updateApproval(action));
             
