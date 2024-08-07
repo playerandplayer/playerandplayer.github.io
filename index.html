@@ -21,13 +21,21 @@
         // Function to generate a random group name
         function generateRandomName() {
             const names = [
-                'Alpha Squad', 'Beta Crew', 'Gamma Team', 'Delta Force', 
-                'Epsilon Group', 'Zeta Alliance', 'Eta League', 'Theta Circle', 
-                'Iota Network', 'Kappa Coalition'
+                'Conservative Alliance', 'Unionists', 'Worker Union', 'Nationalists', 
+                'Big Pharma', 'United People', 'Reformists', 'Gun Lobby', 
+                'The Goons', 'Order of The Black Sun'
             ];
             const randomIndex = Math.floor(Math.random() * names.length);
             return names[randomIndex];
         }
+		
+		class InterestGroup {
+            constructor() {
+                this.name = generateRandomName();
+                this.socialAxisPercentage = Math.floor(Math.random() * 101); // Social axis percentage (0-100)
+                this.economicAxisPercentage = Math.floor(Math.random() * 101); // Economic axis percentage (0-100)
+                this.approval = 50; // Initial approval rating
+            }
 
 
             getSocialIdeology() {
@@ -49,6 +57,8 @@
                     return 'Communism';
                 }
             }
+			
+			
 
             updateApproval(action) {
                 let impact = 0;
@@ -77,13 +87,6 @@
             }
         }
 		
-		class InterestGroup {
-            constructor() {
-                this.name = generateRandomName();
-                this.socialAxisPercentage = Math.floor(Math.random() * 101); // Social axis percentage (0-100)
-                this.economicAxisPercentage = Math.floor(Math.random() * 101); // Economic axis percentage (0-100)
-                this.approval = 50; // Initial approval rating
-            }
 
         // Create an array of interest groups with random names
         const groups = [
