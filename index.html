@@ -67,9 +67,9 @@
         <!-- Government Section -->
         <section id="government-section">
             <h2>Government</h2>
-            <p><strong>Type:</strong> </p>
-            <p><strong>Leader:</strong> </p>
-            <p><strong>Capital:</strong> </p>
+            <p><strong>Type:</strong> <span id="gov-type"></span></p>
+            <p><strong>Leader:</strong> <span id="gov-leader"></span></p>
+            <p><strong>Capital:</strong> <span id="gov-capital"></span></p>
         </section>
 
         <!-- Laws Section -->
@@ -93,9 +93,9 @@
     <script>
         // Mock data for the nation
         const nation = {
-            name: "Donolandica",
-            flag: "images/shadow.png", // Path to the flag image
-            map: "images/shadow.png",   // Path to the map image
+            name: "Republic of Exampleland",
+            flag: "exampleland_flag.png", // Path to the flag image
+            map: "exampleland_map.png",   // Path to the map image
             government: {
                 type: "Democratic Republic",
                 leader: "President Jane Doe",
@@ -117,11 +117,10 @@
         document.getElementById("flag-image").src = nation.flag;
         document.getElementById("map-image").src = nation.map;
 
-        // Government section
-        const governmentSection = document.getElementById("government-section");
-        governmentSection.querySelector("strong").nextSibling.textContent = nation.government.type;
-        governmentSection.querySelector("strong + p").nextSibling.textContent = nation.government.leader;
-        governmentSection.querySelector("strong + p + p").nextSibling.textContent = nation.government.capital;
+        // Government section - Fixed by adding proper IDs to span elements
+        document.getElementById("gov-type").textContent = nation.government.type;
+        document.getElementById("gov-leader").textContent = nation.government.leader;
+        document.getElementById("gov-capital").textContent = nation.government.capital;
 
         // Laws section
         const lawsList = document.getElementById("laws-list");
