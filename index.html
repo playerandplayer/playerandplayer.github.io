@@ -3,16 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAINPAGE</title>
+    <title>Republic of Exampleland</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #004080;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: #004080;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <h1>EMN Archives</h1>
+    <header>
+        <h1 id="nation-name">Welcome to Republic of Exampleland</h1>
+    </header>
+    <div class="container">
+        <!-- Flag Section -->
+        <section>
+            <h2>National Flag</h2>
+            <img id="flag-image" src="" alt="Flag of Exampleland">
+        </section>
 
-    <form action="https://playerandplayer.github.io/oliver">
-    <input type="submit" value="OliverEMN" />
-    </form>
-    <form action="https://playerandplayer.github.io/oliver">
-    <input type="submit" value="OscarEMN" />
-    </form>
+        <!-- Map Section -->
+        <section>
+            <h2>Nation Map</h2>
+            <img id="map-image" src="" alt="Map of Exampleland">
+        </section>
+
+        <!-- Government Section -->
+        <section id="government-section">
+            <h2>Government</h2>
+            <p><strong>Type:</strong> </p>
+            <p><strong>Leader:</strong> </p>
+            <p><strong>Capital:</strong> </p>
+        </section>
+
+        <!-- Laws Section -->
+        <section id="laws-section">
+            <h2>Laws</h2>
+            <ul id="laws-list"></ul>
+        </section>
+
+        <!-- Economics Section -->
+        <section id="economics-section">
+            <h2>Economics</h2>
+            <table id="economics-table">
+                <tr>
+                    <th>Aspect</th>
+                    <th>Details</th>
+                </tr>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        // Mock data for the nation
+        const nation = {
+            name: "Republic of Exampleland",
+            flag: "exampleland_flag.png", // Path to the flag image
+            map: "exampleland_map.png",   // Path to the map image
+            government: {
+                type: "Democratic Republic",
+                leader: "President Jane Doe",
+                capital: "Example City"
+            },
+            laws: {
+                "Constitution": "Adopted in 1980, guarantees free speech, equality, and more.",
+                "Legal System": "Based on civil law with independent judiciary."
+            },
+            economics: {
+                "GDP": "$500 billion",
+                "Major Industries": ["Technology", "Agriculture", "Tourism"],
+                "Currency": "Example Dollar (EXD)"
+            }
+        };
+
+        // Populate the HTML with data
+        document.getElementById("nation-name").textContent = `Welcome to ${nation.name}`;
+        document.getElementById("flag-image").src = nation.flag;
+        document.getElementById("map-image").src = nation.map;
+
+        // Government section
+        const governmentSection = document.getElementById("government-section");
+        governmentSection.querySelector("strong").nextSibling.textContent = nation.government.type;
+        governmentSection.querySelector("strong + p").nextSibling.textContent = nation.government.leader;
+        governmentSection.querySelector("strong + p + p").nextSibling.textContent = nation.government.capital;
+
+        // Laws section
+        const lawsList = document.getElementById("laws-list");
+        for (const [key, description] of Object.entries(nation.laws)) {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `<strong>${key}:</strong> ${description}`;
+            lawsList.appendChild(listItem);
+        }
+
+        // Economics section
+        const economicsTable = document.getElementById("economics-table");
+        for (const [key, value] of Object.entries(nation.economics)) {
+            const row = document.createElement("tr");
+
+            const tdKey = document.createElement("td");
+            tdKey.textContent = key;
+            row.appendChild(tdKey);
+
+            const tdValue = document.createElement("td");
+            tdValue.textContent = Array.isArray(value) ? value.join(", ") : value;
+            row.appendChild(tdValue);
+
+            economicsTable.appendChild(row);
+        }
+    </script>
 </body>
 </html>
