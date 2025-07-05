@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Political Ideology Test</title>
+  <title>Multi-Axis Political Ideology Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 2em;
-      background: #f5f5f5;
-      color: #333;
-      max-width: 600px;
+      background: #f0f0f0;
+      max-width: 800px;
       margin: auto;
     }
     h1, h2 {
@@ -17,17 +16,18 @@
     }
     .question {
       background: white;
-      padding: 1em;
+      padding: 1.2em;
       margin: 1em 0;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     button {
-      margin: 0.5em;
+      margin: 0.4em;
       padding: 0.5em 1em;
-      border: none;
+      font-size: 1em;
       background-color: #007bff;
       color: white;
+      border: none;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -39,52 +39,67 @@
       font-size: 1.2em;
       margin-top: 2em;
     }
+    .axis-result {
+      margin: 1em 0;
+    }
   </style>
 </head>
 <body>
 
-<h1>Political Ideology Test</h1>
+<h1>Multi-Axis Political Ideology Test</h1>
 <div id="quiz"></div>
 <div id="result"></div>
 
 <script>
   const questions = [
     {
-      text: "The government should provide free healthcare to all citizens.",
-      axis: "leftRight",
+      text: "The government should provide universal basic income.",
+      axis: "economic",
       effect: -2
     },
     {
-      text: "Lower taxes are more important than social welfare.",
-      axis: "leftRight",
+      text: "Taxes should be lower, especially for businesses.",
+      axis: "economic",
       effect: 2
     },
     {
-      text: "Personal freedom is more important than national security.",
-      axis: "authLib",
+      text: "The government should be able to monitor all communications to ensure safety.",
+      axis: "social",
+      effect: 2
+    },
+    {
+      text: "Freedom of speech should be protected even for offensive views.",
+      axis: "social",
       effect: -2
     },
     {
-      text: "The state should have more control to maintain order.",
-      axis: "authLib",
+      text: "International cooperation is more important than national sovereignty.",
+      axis: "foreign",
+      effect: -2
+    },
+    {
+      text: "Foreign aid is a waste of resources.",
+      axis: "foreign",
       effect: 2
     },
     {
-      text: "Large corporations are a threat to democracy.",
-      axis: "leftRight",
-      effect: -1
+      text: "Climate change is a major threat and requires drastic action.",
+      axis: "environmental",
+      effect: -2
     },
     {
-      text: "Drug use should be decriminalized.",
-      axis: "authLib",
-      effect: -1
+      text: "Environmental regulations hurt the economy and should be reduced.",
+      axis: "environmental",
+      effect: 2
     }
   ];
 
   let currentQuestion = 0;
   let scores = {
-    leftRight: 0,  // Negative = Left, Positive = Right
-    authLib: 0     // Negative = Libertarian, Positive = Authoritarian
+    economic: 0,       // Negative = Left, Positive = Right
+    social: 0,         // Negative = Libertarian, Positive = Authoritarian
+    foreign: 0,        // Negative = Globalist, Positive = Isolationist
+    environmental: 0   // Negative = Green/Progressive, Positive = Industrialist
   };
 
   const quizContainer = document.getElementById('quiz');
@@ -99,7 +114,7 @@
     const q = questions[currentQuestion];
     quizContainer.innerHTML = `
       <div class="question">
-        <h2>Question ${currentQuestion + 1}</h2>
+        <h2>Question ${currentQuestion + 1} of ${questions.length}</h2>
         <p>${q.text}</p>
         <button onclick="answer(-2)">Strongly Agree</button>
         <button onclick="answer(-1)">Agree</button>
@@ -117,22 +132,24 @@
     showQuestion();
   }
 
+  function getAxisLabel(axis, value) {
+    const labels = {
+      economic: value < 0 ? "Left-Wing" : value > 0 ? "Right-Wing" : "Centrist",
+      social: value < 0 ? "Libertarian" : value > 0 ? "Authoritarian" : "Centrist",
+      foreign: value < 0 ? "Globalist" : value > 0 ? "Isolationist" : "Centrist",
+      environmental: value < 0 ? "Progressive/Green" : value > 0 ? "Industrialist" : "Centrist"
+    };
+    return labels[axis];
+  }
+
   function showResult() {
     quizContainer.innerHTML = '';
-
-    let ideology = "Centrist";
-
-    if (scores.leftRight < -3) ideology = "Left-Wing";
-    else if (scores.leftRight > 3) ideology = "Right-Wing";
-
-    if (scores.authLib < -3) ideology += " Libertarian";
-    else if (scores.authLib > 3) ideology += " Authoritarian";
-
     resultContainer.innerHTML = `
-      <h2>Your Political Ideology:</h2>
-      <p><strong>${ideology}</strong></p>
-      <p>Left/Right Score: ${scores.leftRight}</p>
-      <p>Authoritarian/Libertarian Score: ${scores.authLib}</p>
+      <h2>Your Political Profile</h2>
+      <div class="axis-result"><strong>Economic:</strong> ${getAxisLabel("economic", scores.economic)} (${scores.economic})</div>
+      <div class="axis-result"><strong>Social:</strong> ${getAxisLabel("social", scores.social)} (${scores.social})</div>
+      <div class="axis-result"><strong>Foreign Policy:</strong> ${getAxisLabel("foreign", scores.foreign)} (${scores.foreign})</div>
+      <div class="axis-result"><strong>Environmental:</strong> ${getAxisLabel("environmental", scores.environmental)} (${scores.environmental})</div>
     `;
   }
 
