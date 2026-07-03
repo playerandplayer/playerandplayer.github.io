@@ -2,17 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TEST TEST TEST</title>
+<title>Parliament Diagram (Correct Hemicycle)</title>
+
 <style>
 body { margin:0; font-family:Arial; display:flex; height:100vh; }
 #panel { width:320px; background:#f4f4f4; padding:12px; overflow:auto; }
 canvas { flex:1; background:white; }
-.party { border:1px solid #ccc; padding:6px; margin:6px 0; background:#fff; }
+.party { background:white; border:1px solid #ccc; padding:6px; margin:6px 0; }
 input { width:95%; margin:2px 0; }
 button { margin-top:6px; }
-h2 { margin:6px 0 10px; }
+h2 { margin:8px 0; }
 </style>
 </head>
+
 <body>
 
 <div id="panel">
@@ -33,17 +35,17 @@ h2 { margin:6px 0 10px; }
 
 const partiesDiv = document.getElementById("parties");
 
-function randColor(){
+function color(){
   return "#"+Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
 }
 
-function addParty(name="Party", seats=20, color=randColor()){
-  const d = document.createElement("div");
+function addParty(name="Party", seats=30, col=color()){
+  const d=document.createElement("div");
   d.className="party";
-  d.innerHTML = `
+  d.innerHTML=`
     Name<input class="n" value="${name}">
     Seats<input class="s" type="number" value="${seats}">
-    Color<input class="c" type="color" value="${color}">
+    Color<input class="c" type="color" value="${col}">
     <button onclick="this.parentNode.remove();draw()">Remove</button>
   `;
   d.querySelectorAll("input").forEach(i=>i.oninput=draw);
@@ -65,14 +67,14 @@ function getParties(){
 
 /*
 CORE FIX:
-- true hemicycle rows
-- consistent center origin
-- no spiral / radial distortion
-- seats filled row-by-row in a proper arc grid
+- generate hemicycle grid
+- flatten ALL seats
+- SORT BY ANGLE ONLY (THIS IS THE KEY FIX)
+- assign left→right sequentially
 */
-function generateHemicycle(total, cx, cy){
-  const seats = [];
+function generateSeats(total, cx, cy){
 
+  const seats = [];
   const seatR = 10;
   const rowGap = 28;
 
@@ -83,22 +85,20 @@ function generateHemicycle(total, cx, cy){
 
     const radius = 100 + row * rowGap;
 
-    // angular width of a hemicycle (180°)
-    const arcStart = Math.PI;
-    const arcEnd = 0;
-
     const circumference = Math.PI * radius;
-
     const seatsInRow = Math.max(6, Math.floor(circumference / (seatR * 2.3)));
 
     for(let i=0; i<seatsInRow && placed<total; i++){
 
       const t = i / (seatsInRow - 1 || 1);
-      const angle = arcStart + (arcEnd - arcStart) * t;
+
+      // IMPORTANT: left (PI) → right (0)
+      const angle = Math.PI - t * Math.PI;
 
       seats.push({
         x: cx + radius * Math.cos(angle),
-        y: cy - radius * Math.sin(angle)
+        y: cy - radius * Math.sin(angle),
+        angle: angle
       });
 
       placed++;
@@ -112,37 +112,42 @@ function generateHemicycle(total, cx, cy){
 
 function draw(){
 
-  const canvas = document.getElementById("c");
-  const ctx = canvas.getContext("2d");
+  const canvas=document.getElementById("c");
+  const ctx=canvas.getContext("2d");
 
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  const parties = getParties();
-  const total = +document.getElementById("total").value;
+  const parties=getParties();
+  const total=+document.getElementById("total").value;
 
-  const cx = canvas.width/2;
-  const cy = canvas.height - 60;
+  const cx=canvas.width/2;
+  const cy=canvas.height-60;
 
-  const seats = generateHemicycle(total, cx, cy);
+  let seats = generateSeats(total,cx,cy);
 
-  // flatten party blocks (true parliament logic)
-  const assignment = [];
-  parties.forEach(p=>{
-    for(let i=0;i<p.seats;i++) assignment.push(p.color);
-  });
+  // ⭐ KEY FIX: global ordering ONLY by angle (NOT row, NOT y)
+  seats.sort((a,b)=> b.angle - a.angle);
+
+  const assignment=[];
+
+  for(const p of parties){
+    for(let i=0;i<p.seats;i++){
+      assignment.push(p.color);
+    }
+  }
 
   while(assignment.length < seats.length)
     assignment.push("#ddd");
 
-  // draw seats
   for(let i=0;i<seats.length;i++){
-    const s = seats[i];
+
+    const s=seats[i];
 
     ctx.beginPath();
-    ctx.arc(s.x, s.y, 9, 0, Math.PI*2);
-    ctx.fillStyle = assignment[i];
+    ctx.arc(s.x,s.y,9,0,Math.PI*2);
+    ctx.fillStyle=assignment[i];
     ctx.fill();
-    ctx.strokeStyle = "#222";
+    ctx.strokeStyle="#222";
     ctx.stroke();
   }
 
@@ -150,17 +155,18 @@ function draw(){
   let y=20;
   ctx.font="14px Arial";
 
-  parties.forEach(p=>{
+  for(const p of parties){
     ctx.fillStyle=p.color;
     ctx.fillRect(20,y-12,14,14);
     ctx.fillStyle="#000";
     ctx.fillText(`${p.name} (${p.seats})`,45,y);
     y+=22;
-  });
+  }
 }
 
 draw();
 
 </script>
+
 </body>
 </html>
