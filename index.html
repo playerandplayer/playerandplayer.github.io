@@ -1,159 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Multi-Axis Political Ideology Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2em;
-      background: #f0f0f0;
-      max-width: 800px;
-      margin: auto;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .question {
-      background: white;
-      padding: 1.2em;
-      margin: 1em 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    button {
-      margin: 0.4em;
-      padding: 0.5em 1em;
-      font-size: 1em;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #result {
-      text-align: center;
-      font-size: 1.2em;
-      margin-top: 2em;
-    }
-    .axis-result {
-      margin: 1em 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Parliament Diagram Maker</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f2f2f2;
+}
+
+.container{
+    display:flex;
+    height:100vh;
+}
+
+.sidebar{
+    width:320px;
+    background:white;
+    padding:20px;
+    overflow:auto;
+    box-shadow:2px 0 10px rgba(0,0,0,.15);
+}
+
+canvas{
+    flex:1;
+    background:white;
+}
+
+h2{
+    margin-top:0;
+}
+
+.party{
+    border:1px solid #ccc;
+    padding:8px;
+    margin-bottom:10px;
+    border-radius:6px;
+}
+
+.party input{
+    width:90%;
+    margin:3px 0;
+}
+
+button{
+    margin-top:8px;
+    padding:8px 12px;
+    cursor:pointer;
+}
+</style>
 </head>
 <body>
 
-<h1>Multi-Axis Political Ideology Test</h1>
-<div id="quiz"></div>
-<div id="result"></div>
+<div class="container">
+
+<div class="sidebar">
+
+<h2>Parliament Diagram</h2>
+
+<label>Total Seats</label><br>
+<input id="totalSeats" type="number" value="100"><br><br>
+
+<div id="parties"></div>
+
+<button onclick="addParty()">Add Party</button>
+<button onclick="draw()">Draw</button>
+<button onclick="download()">Export PNG</button>
+
+</div>
+
+<canvas id="canvas" width="1000" height="700"></canvas>
+
+</div>
 
 <script>
-  const questions = [
-    {
-      text: "The government should provide universal basic income.",
-      axis: "economic",
-      effect: -2
-    },
-    {
-      text: "Taxes should be lower, especially for businesses.",
-      axis: "economic",
-      effect: 2
-    },
-    {
-      text: "The government should be able to monitor all communications to ensure safety.",
-      axis: "social",
-      effect: 2
-    },
-    {
-      text: "Freedom of speech should be protected even for offensive views.",
-      axis: "social",
-      effect: -2
-    },
-    {
-      text: "International cooperation is more important than national sovereignty.",
-      axis: "foreign",
-      effect: -2
-    },
-    {
-      text: "Foreign aid is a waste of resources.",
-      axis: "foreign",
-      effect: 2
-    },
-    {
-      text: "Climate change is a major threat and requires drastic action.",
-      axis: "environmental",
-      effect: -2
-    },
-    {
-      text: "Environmental regulations hurt the economy and should be reduced.",
-      axis: "environmental",
-      effect: 2
-    }
-  ];
 
-  let currentQuestion = 0;
-  let scores = {
-    economic: 0,       // Negative = Left, Positive = Right
-    social: 0,         // Negative = Libertarian, Positive = Authoritarian
-    foreign: 0,        // Negative = Globalist, Positive = Isolationist
-    environmental: 0   // Negative = Green/Progressive, Positive = Industrialist
-  };
+const partiesDiv=document.getElementById("parties");
 
-  const quizContainer = document.getElementById('quiz');
-  const resultContainer = document.getElementById('result');
+function addParty(name="",seats=0,color=randomColor()){
 
-  function showQuestion() {
-    if (currentQuestion >= questions.length) {
-      showResult();
-      return;
-    }
+    const div=document.createElement("div");
+    div.className="party";
 
-    const q = questions[currentQuestion];
-    quizContainer.innerHTML = `
-      <div class="question">
-        <h2>Question ${currentQuestion + 1} of ${questions.length}</h2>
-        <p>${q.text}</p>
-        <button onclick="answer(-2)">Strongly Agree</button>
-        <button onclick="answer(-1)">Agree</button>
-        <button onclick="answer(0)">Neutral</button>
-        <button onclick="answer(1)">Disagree</button>
-        <button onclick="answer(2)">Strongly Disagree</button>
-      </div>
+    div.innerHTML=`
+    <label>Name</label><br>
+    <input class="name" value="${name}"><br>
+
+    <label>Seats</label><br>
+    <input class="seats" type="number" value="${seats}"><br>
+
+    <label>Color</label><br>
+    <input class="color" type="color" value="${color}"><br>
+
+    <button onclick="this.parentNode.remove();draw();">Remove</button>
     `;
-  }
 
-  function answer(value) {
-    const q = questions[currentQuestion];
-    scores[q.axis] += value * q.effect;
-    currentQuestion++;
-    showQuestion();
-  }
+    div.querySelectorAll("input").forEach(i=>{
+        i.addEventListener("input",draw);
+    });
 
-  function getAxisLabel(axis, value) {
-    const labels = {
-      economic: value < 0 ? "Left-Wing" : value > 0 ? "Right-Wing" : "Centrist",
-      social: value < 0 ? "Libertarian" : value > 0 ? "Authoritarian" : "Centrist",
-      foreign: value < 0 ? "Globalist" : value > 0 ? "Isolationist" : "Centrist",
-      environmental: value < 0 ? "Progressive/Green" : value > 0 ? "Industrialist" : "Centrist"
-    };
-    return labels[axis];
-  }
+    partiesDiv.appendChild(div);
+}
 
-  function showResult() {
-    quizContainer.innerHTML = '';
-    resultContainer.innerHTML = `
-      <h2>Your Political Profile</h2>
-      <div class="axis-result"><strong>Economic:</strong> ${getAxisLabel("economic", scores.economic)} (${scores.economic})</div>
-      <div class="axis-result"><strong>Social:</strong> ${getAxisLabel("social", scores.social)} (${scores.social})</div>
-      <div class="axis-result"><strong>Foreign Policy:</strong> ${getAxisLabel("foreign", scores.foreign)} (${scores.foreign})</div>
-      <div class="axis-result"><strong>Environmental:</strong> ${getAxisLabel("environmental", scores.environmental)} (${scores.environmental})</div>
-    `;
-  }
+function randomColor(){
+    return "#"+Math.floor(Math.random()*16777215)
+        .toString(16)
+        .padStart(6,"0");
+}
 
-  showQuestion();
+addParty("Party A",40,"#d73027");
+addParty("Party B",30,"#4575b4");
+addParty("Party C",20,"#66bd63");
+addParty("Party D",10,"#fdae61");
+
+function draw(){
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+const total=parseInt(document.getElementById("totalSeats").value);
+
+let partyData=[];
+
+document.querySelectorAll(".party").forEach(p=>{
+
+partyData.push({
+name:p.querySelector(".name").value,
+seats:parseInt(p.querySelector(".seats").value)||0,
+color:p.querySelector(".color").value
+});
+
+});
+
+let colors=[];
+
+partyData.forEach(p=>{
+    for(let i=0;i<p.seats;i++)
+        colors.push(p.color);
+});
+
+while(colors.length<total)
+    colors.push("#cccccc");
+
+colors=colors.slice(0,total);
+
+const cx=canvas.width/2;
+const cy=canvas.height-60;
+
+const seatRadius=10;
+
+const rows=Math.ceil(Math.sqrt(total)/2)+3;
+
+let placed=0;
+
+for(let row=0;row<rows;row++){
+
+    const r=70+row*35;
+
+    const seats=Math.max(
+        5,
+        Math.floor(Math.PI*r/(seatRadius*2.2))
+    );
+
+    for(let i=0;i<seats;i++){
+
+        if(placed>=colors.length)
+            break;
+
+        const angle=Math.PI-(i/(seats-1))*Math.PI;
+
+        const x=cx+r*Math.cos(angle);
+        const y=cy-r*Math.sin(angle);
+
+        ctx.beginPath();
+        ctx.arc(x,y,seatRadius,0,Math.PI*2);
+        ctx.fillStyle=colors[placed];
+        ctx.fill();
+        ctx.strokeStyle="#222";
+        ctx.stroke();
+
+        placed++;
+
+    }
+
+}
+
+ctx.font="16px Arial";
+ctx.fillStyle="black";
+
+let y=30;
+
+partyData.forEach(p=>{
+
+ctx.fillStyle=p.color;
+ctx.fillRect(20,y-12,20,20);
+
+ctx.fillStyle="black";
+ctx.fillText(`${p.name} (${p.seats})`,50,y+3);
+
+y+=28;
+
+});
+
+}
+
+draw();
+
+function download(){
+
+const a=document.createElement("a");
+a.download="parliament.png";
+a.href=document.getElementById("canvas").toDataURL();
+a.click();
+
+}
+
 </script>
 
 </body>
