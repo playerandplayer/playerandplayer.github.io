@@ -78,32 +78,36 @@ function generateSeats(total, cx, cy){
   const seatR = 10;
   const rowGap = 28;
 
-  let placed = 0;
+  let remaining = total;
   let row = 0;
 
-  while(placed < total){
+  while(remaining > 0){
 
     const radius = 100 + row * rowGap;
 
-    const circumference = Math.PI * radius;
-    const seatsInRow = Math.max(6, Math.floor(circumference / (seatR * 2.3)));
+    // arc length of semicircle
+    const arcLength = Math.PI * radius;
 
-    for(let i=0; i<seatsInRow && placed<total; i++){
+    // ideal density (tuned constant)
+    let idealSeats = Math.round(arcLength / (seatR * 2.2));
 
-      const t = i / (seatsInRow - 1 || 1);
+    // clamp so we don't over-allocate
+    let seatsInRow = Math.min(remaining, Math.max(6, idealSeats));
 
-      // IMPORTANT: left (PI) → right (0)
+    for(let i=0; i<seatsInRow; i++){
+
+      const t = seatsInRow === 1 ? 0.5 : i / (seatsInRow - 1);
+
       const angle = Math.PI - t * Math.PI;
 
       seats.push({
         x: cx + radius * Math.cos(angle),
         y: cy - radius * Math.sin(angle),
-        angle: angle
+        angle
       });
-
-      placed++;
     }
 
+    remaining -= seatsInRow;
     row++;
   }
 
