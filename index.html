@@ -2,224 +2,165 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Parliament Diagram Maker</title>
-
+<title>Parliament Diagram (Hemicycle)</title>
 <style>
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f2f2f2;
-}
-
-.container{
-    display:flex;
-    height:100vh;
-}
-
-.sidebar{
-    width:320px;
-    background:white;
-    padding:20px;
-    overflow:auto;
-    box-shadow:2px 0 10px rgba(0,0,0,.15);
-}
-
-canvas{
-    flex:1;
-    background:white;
-}
-
-h2{
-    margin-top:0;
-}
-
-.party{
-    border:1px solid #ccc;
-    padding:8px;
-    margin-bottom:10px;
-    border-radius:6px;
-}
-
-.party input{
-    width:90%;
-    margin:3px 0;
-}
-
-button{
-    margin-top:8px;
-    padding:8px 12px;
-    cursor:pointer;
-}
+body { margin:0; font-family:Arial; display:flex; height:100vh; }
+#panel { width:320px; background:#f4f4f4; padding:12px; overflow:auto; }
+canvas { flex:1; background:white; }
+.party { border:1px solid #ccc; padding:6px; margin:6px 0; background:#fff; }
+input { width:95%; margin:2px 0; }
+button { margin-top:6px; }
+h2 { margin:6px 0 10px; }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div id="panel">
+<h2>Parliament</h2>
 
-<div class="sidebar">
-
-<h2>Parliament Diagram</h2>
-
-<label>Total Seats</label><br>
-<input id="totalSeats" type="number" value="100"><br><br>
+<label>Total seats</label>
+<input id="total" type="number" value="200">
 
 <div id="parties"></div>
 
 <button onclick="addParty()">Add Party</button>
 <button onclick="draw()">Draw</button>
-<button onclick="download()">Export PNG</button>
-
 </div>
 
-<canvas id="canvas" width="1000" height="700"></canvas>
-
-</div>
+<canvas id="c" width="1200" height="800"></canvas>
 
 <script>
 
-const partiesDiv=document.getElementById("parties");
+const partiesDiv = document.getElementById("parties");
 
-function addParty(name="",seats=0,color=randomColor()){
-
-    const div=document.createElement("div");
-    div.className="party";
-
-    div.innerHTML=`
-    <label>Name</label><br>
-    <input class="name" value="${name}"><br>
-
-    <label>Seats</label><br>
-    <input class="seats" type="number" value="${seats}"><br>
-
-    <label>Color</label><br>
-    <input class="color" type="color" value="${color}"><br>
-
-    <button onclick="this.parentNode.remove();draw();">Remove</button>
-    `;
-
-    div.querySelectorAll("input").forEach(i=>{
-        i.addEventListener("input",draw);
-    });
-
-    partiesDiv.appendChild(div);
+function randColor(){
+  return "#"+Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
 }
 
-function randomColor(){
-    return "#"+Math.floor(Math.random()*16777215)
-        .toString(16)
-        .padStart(6,"0");
+function addParty(name="Party", seats=20, color=randColor()){
+  const d = document.createElement("div");
+  d.className="party";
+  d.innerHTML = `
+    Name<input class="n" value="${name}">
+    Seats<input class="s" type="number" value="${seats}">
+    Color<input class="c" type="color" value="${color}">
+    <button onclick="this.parentNode.remove();draw()">Remove</button>
+  `;
+  d.querySelectorAll("input").forEach(i=>i.oninput=draw);
+  partiesDiv.appendChild(d);
+  draw();
 }
 
-addParty("Party A",40,"#d73027");
-addParty("Party B",30,"#4575b4");
-addParty("Party C",20,"#66bd63");
-addParty("Party D",10,"#fdae61");
+addParty("Left", 80, "#d73027");
+addParty("Center", 60, "#fee08b");
+addParty("Right", 60, "#4575b4");
+
+function getParties(){
+  return [...document.querySelectorAll(".party")].map(p=>({
+    name:p.querySelector(".n").value,
+    seats:+p.querySelector(".s").value,
+    color:p.querySelector(".c").value
+  }));
+}
+
+/*
+CORE FIX:
+- true hemicycle rows
+- consistent center origin
+- no spiral / radial distortion
+- seats filled row-by-row in a proper arc grid
+*/
+function generateHemicycle(total, cx, cy){
+  const seats = [];
+
+  const seatR = 10;
+  const rowGap = 28;
+
+  let placed = 0;
+  let row = 0;
+
+  while(placed < total){
+
+    const radius = 100 + row * rowGap;
+
+    // angular width of a hemicycle (180°)
+    const arcStart = Math.PI;
+    const arcEnd = 0;
+
+    const circumference = Math.PI * radius;
+
+    const seatsInRow = Math.max(6, Math.floor(circumference / (seatR * 2.3)));
+
+    for(let i=0; i<seatsInRow && placed<total; i++){
+
+      const t = i / (seatsInRow - 1 || 1);
+      const angle = arcStart + (arcEnd - arcStart) * t;
+
+      seats.push({
+        x: cx + radius * Math.cos(angle),
+        y: cy - radius * Math.sin(angle)
+      });
+
+      placed++;
+    }
+
+    row++;
+  }
+
+  return seats;
+}
 
 function draw(){
 
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d");
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-const total=parseInt(document.getElementById("totalSeats").value);
+  const parties = getParties();
+  const total = +document.getElementById("total").value;
 
-let partyData=[];
+  const cx = canvas.width/2;
+  const cy = canvas.height - 60;
 
-document.querySelectorAll(".party").forEach(p=>{
+  const seats = generateHemicycle(total, cx, cy);
 
-partyData.push({
-name:p.querySelector(".name").value,
-seats:parseInt(p.querySelector(".seats").value)||0,
-color:p.querySelector(".color").value
-});
+  // flatten party blocks (true parliament logic)
+  const assignment = [];
+  parties.forEach(p=>{
+    for(let i=0;i<p.seats;i++) assignment.push(p.color);
+  });
 
-});
+  while(assignment.length < seats.length)
+    assignment.push("#ddd");
 
-let colors=[];
+  // draw seats
+  for(let i=0;i<seats.length;i++){
+    const s = seats[i];
 
-partyData.forEach(p=>{
-    for(let i=0;i<p.seats;i++)
-        colors.push(p.color);
-});
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 9, 0, Math.PI*2);
+    ctx.fillStyle = assignment[i];
+    ctx.fill();
+    ctx.strokeStyle = "#222";
+    ctx.stroke();
+  }
 
-while(colors.length<total)
-    colors.push("#cccccc");
+  // legend
+  let y=20;
+  ctx.font="14px Arial";
 
-colors=colors.slice(0,total);
-
-const cx=canvas.width/2;
-const cy=canvas.height-60;
-
-const seatRadius=10;
-
-const rows=Math.ceil(Math.sqrt(total)/2)+3;
-
-let placed=0;
-
-for(let row=0;row<rows;row++){
-
-    const r=70+row*35;
-
-    const seats=Math.max(
-        5,
-        Math.floor(Math.PI*r/(seatRadius*2.2))
-    );
-
-    for(let i=0;i<seats;i++){
-
-        if(placed>=colors.length)
-            break;
-
-        const angle=Math.PI-(i/(seats-1))*Math.PI;
-
-        const x=cx+r*Math.cos(angle);
-        const y=cy-r*Math.sin(angle);
-
-        ctx.beginPath();
-        ctx.arc(x,y,seatRadius,0,Math.PI*2);
-        ctx.fillStyle=colors[placed];
-        ctx.fill();
-        ctx.strokeStyle="#222";
-        ctx.stroke();
-
-        placed++;
-
-    }
-
-}
-
-ctx.font="16px Arial";
-ctx.fillStyle="black";
-
-let y=30;
-
-partyData.forEach(p=>{
-
-ctx.fillStyle=p.color;
-ctx.fillRect(20,y-12,20,20);
-
-ctx.fillStyle="black";
-ctx.fillText(`${p.name} (${p.seats})`,50,y+3);
-
-y+=28;
-
-});
-
+  parties.forEach(p=>{
+    ctx.fillStyle=p.color;
+    ctx.fillRect(20,y-12,14,14);
+    ctx.fillStyle="#000";
+    ctx.fillText(`${p.name} (${p.seats})`,45,y);
+    y+=22;
+  });
 }
 
 draw();
 
-function download(){
-
-const a=document.createElement("a");
-a.download="parliament.png";
-a.href=document.getElementById("canvas").toDataURL();
-a.click();
-
-}
-
 </script>
-
 </body>
 </html>
